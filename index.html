@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Desencriptador de Frases</title>
+</head>
+
+<body>
+    <h1>Desencriptador de Frases</h1>
+    <label for="fraseEncriptada2">Ingrese la frase encriptada (X''):</label>
+    <input type="text" id="fraseEncriptada2" placeholder="Escriba la frase encriptada (X'') aquí">
+    <button onclick="desencriptar()">Desencriptar</button>
+    <p>Resultado Desencriptado Primer Nivel (X'): </p>
+    <p id="resultadoDesencriptadoNivel1"></p>
+    <p>Resultado Desencriptado (X): </p>
+    <p id="resultadoDesencriptadoX"></p>
+
+    <script>
+        function desencriptarMensaje(X2) {
+            // Revertir las posiciones de letras en X' en espejo y a la derecha
+            let desencriptadoNivel1 = '';
+            for (let i = X2.length - 1; i >= 0; i--) {
+                if (i % 2 === 0) {
+                    // Posiciones pares, poner en espejo y a la derecha
+                    desencriptadoNivel1 += X2[i];
+                } else {
+                    // Posiciones impares, juntar a la izquierda
+                    desencriptadoNivel1 = X2[i] + desencriptadoNivel1;
+                }
+            }
+
+            // Reemplazar comas y espacios por un carácter especial para evitar interferencias
+            desencriptadoNivel1 = desencriptadoNivel1.replace(/,/g, '@').replace(/ /g, '#');
+
+            // Dividir en secciones entre vocales y revertir letras en espejo
+            const secciones = desencriptadoNivel1.split(/([aeiouAEIOU]+)/);
+            let desencriptadoNivel2 = '';
+
+            for (let i = 0; i < secciones.length; i++) {
+                if (i % 2 === 0) {
+                    // Sección de vocales, mantener igual
+                    desencriptadoNivel2 += secciones[i];
+                } else {
+                    // Sección entre vocales, revertir en espejo
+                    desencriptadoNivel2 += secciones[i].split('').reverse().join('');
+                }
+            }
+
+            // Reemplazar caracteres especiales nuevamente por comas y espacios
+            desencriptadoNivel2 = desencriptadoNivel2.replace(/@/g, ',').replace(/#/g, ' ');
+
+            return {
+                nivel1: desencriptadoNivel1,
+                nivel2: desencriptadoNivel2
+            };
+        }
+
+        function desencriptar() {
+            const inputFraseEncriptada2 = document.getElementById('fraseEncriptada2');
+            const resultadoDesencriptadoNivel1 = document.getElementById('resultadoDesencriptadoNivel1');
+            const resultadoDesencriptadoX = document.getElementById('resultadoDesencriptadoX');
+            const fraseEncriptada2 = inputFraseEncriptada2.value;
+            const resultadoDesencriptado = desencriptarMensaje(fraseEncriptada2);
+
+            resultadoDesencriptadoNivel1.textContent = `Resultado Desencriptado Primer Nivel (X'): ${resultadoDesencriptado.nivel1}`;
+            resultadoDesencriptadoX.textContent = `Resultado Desencriptado (X): ${resultadoDesencriptado.nivel2}`;
+        }
+    </script>
+</body>
+
+</html>
